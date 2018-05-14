@@ -1,3 +1,3 @@
-module Schnorrrb
+module Schnorr
   VERSION = "0.1.0"
 end

@@ -1,27 +1,18 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "schnorrrb/version"
+require "schnorr/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "schnorrrb"
-  spec.version       = Schnorrrb::VERSION
+  spec.name          = "schnorr"
+  spec.version       = Schnorr::VERSION
   spec.authors       = ["azuchi"]
   spec.email         = ["azuchi@haw.co.jp"]
 
   spec.summary       = %q{Schnorr signature for Ruby.}
   spec.description   = %q{Schnorr signature for Ruby.}
-  spec.homepage      = "https://github.com/haw-itn/schnorrrb"
+  spec.homepage      = "https://github.com/haw-itn/schnorr"
   spec.license       = "MIT"
-
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
