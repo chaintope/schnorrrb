@@ -12,3 +12,7 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+def fixture_file(relative_path)
+  File.read(File.join(File.dirname(__FILE__), 'fixtures', relative_path))
+end
