@@ -1,4 +1,4 @@
-# Schnorrrb [![Build Status](https://travis-ci.org/chaintope/schnorrrb.svg?branch=master)](https://travis-ci.org/chaintope/schnorrrb) [![Gem Version](https://badge.fury.io/rb/schnorrrb.svg)](https://badge.fury.io/rb/schnorrrb) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) 
+# Schnorrrb [![Build Status](https://travis-ci.org/chaintope/schnorrrb.svg?branch=master)](https://travis-ci.org/chaintope/schnorrrb) [![Gem Version](https://badge.fury.io/rb/schnorr.svg)](https://badge.fury.io/rb/schnorr) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) 
 
 This is a Ruby implementation of the Schnorr signature scheme over the elliptic curve. 
 This implementation relies on the [ecdsa gem](https://github.com/DavidEGrayson/ruby_ecdsa) for operate elliptic curves.
