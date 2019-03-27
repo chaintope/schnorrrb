@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{The ruby implementation of Schnorr signature.}
   spec.description   = %q{The ruby implementation of Schnorr signature.}
-  spec.homepage      = "https://github.com/chaintope/schnorr"
+  spec.homepage      = "https://github.com/chaintope/schnorrrb"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
