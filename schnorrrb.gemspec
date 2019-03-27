@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["azuchi"]
   spec.email         = ["azuchi@haw.co.jp"]
 
-  spec.summary       = %q{Schnorr signature for Ruby.}
-  spec.description   = %q{Schnorr signature for Ruby.}
-  spec.homepage      = "https://github.com/haw-itn/schnorr"
+  spec.summary       = %q{The ruby implementation of Schnorr signature.}
+  spec.description   = %q{The ruby implementation of Schnorr signature.}
+  spec.homepage      = "https://github.com/chaintope/schnorr"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
