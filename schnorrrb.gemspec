@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "schnorr"
   spec.version       = Schnorr::VERSION
   spec.authors       = ["azuchi"]
-  spec.email         = ["azuchi@haw.co.jp"]
+  spec.email         = ["azuchi@chaintope.com"]
 
   spec.summary       = %q{The ruby implementation of Schnorr signature.}
   spec.description   = %q{The ruby implementation of Schnorr signature.}
