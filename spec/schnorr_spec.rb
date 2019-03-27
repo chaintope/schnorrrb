@@ -13,7 +13,7 @@ RSpec.describe Schnorr do
       vectors = CSV.read(File.join(File.dirname(__FILE__), 'fixtures', 'test-vectors.csv'), headers: true)
       vectors.each do |v|
         priv_key = v['secret key'] ? v['secret key'].to_i(16) : nil
-        pubkey = v['public key']
+        pubkey = [v['public key']].pack('H*')
         message = [v['message']].pack('H*')
         expected_sig = v['signature']
         result = v['verification result'] == 'TRUE'
@@ -21,6 +21,7 @@ RSpec.describe Schnorr do
           signature = Schnorr.sign(message, priv_key)
           expect(signature.encode.unpack('H*').first.upcase).to eq(expected_sig)
         end
+        expect(Schnorr.valid_sig?(message, pubkey, [expected_sig].pack('H*'))).to be result
       end
     end
 

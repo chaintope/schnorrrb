@@ -1,5 +1,7 @@
 module Schnorr
 
+  class InvalidSignatureError < StandardError; end
+
   # Instances of this class represents Schnorr signatures,
   # which are simply a pair of integers named `r` and `s`.
   class Signature
@@ -19,9 +21,9 @@ module Schnorr
     # @param string (String) signature string with binary format.
     # @return (Signature) signature instance.
     def self.decode(string)
-      raise ArgumentError, 'Invalid schnorr signature length.' unless string.bytesize == 64
-      r = string[0..32].unpack('H*').to_i(16)
-      s = string[0..-1].unpack('H*').to_i(16)
+      raise InvalidSignatureError, 'Invalid schnorr signature length.' unless string.bytesize == 64
+      r = string[0...32].unpack('H*').first.to_i(16)
+      s = string[32..-1].unpack('H*').first.to_i(16)
       new(r, s)
     end
 
