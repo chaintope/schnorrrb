@@ -24,7 +24,28 @@ RSpec.describe Schnorr do
         expect(Schnorr.valid_sig?(message, pubkey, [expected_sig].pack('H*'))).to be result
       end
     end
+  end
 
+  describe 'batch verification' do
+    context 'valid signatures' do
+      it 'should be return true' do
+        valids = CSV.read(File.join(File.dirname(__FILE__), 'fixtures', 'test-vectors.csv'), headers: true).select{|v|v['verification result'] == 'TRUE'}
+        pubkeys = valids.map{|v|[v['public key']].pack('H*')}
+        messages = valids.map{|v|[v['message']].pack('H*')}
+        signatures = valids.map{|v|[v['signature']].pack('H*')}
+        expect(Schnorr.valid_sigs?(messages, pubkeys, signatures)).to be true
+      end
+    end
+
+    context 'invalid signatures' do
+      it 'should be return false' do
+        valids = CSV.read(File.join(File.dirname(__FILE__), 'fixtures', 'test-vectors.csv'), headers: true)
+        pubkeys = valids.map{|v|[v['public key']].pack('H*')}
+        messages = valids.map{|v|[v['message']].pack('H*')}
+        signatures = valids.map{|v|[v['signature']].pack('H*')}
+        expect(Schnorr.valid_sigs?(messages, pubkeys, signatures)).to be false
+      end
+    end
   end
 
 end
