@@ -102,5 +102,4 @@ Note: But this library has only been tested with `secp256k1`. So another curve a
 
 The following is unimplemented now.
 
-* batch verification.
 * MuSig
