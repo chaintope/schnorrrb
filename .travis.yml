@@ -2,6 +2,7 @@ language: ruby
 rvm:
   - 2.6.2
   - 2.5.5
+  - 2.4.5
 
 bundler_args: --jobs=2
 
