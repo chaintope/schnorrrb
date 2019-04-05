@@ -5,10 +5,6 @@ This implementation relies on the [ecdsa gem](https://github.com/DavidEGrayson/r
 
 The code is based upon the initial proposal of Pieter Wuille's [bip-schnorr](https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki).
 
-## Requirements
-
-* Ruby 2.5+
-
 ## Installation
 
 Add this line to your application's Gemfile:
