@@ -117,4 +117,26 @@ module Schnorr
 
   private_class_method :create_challenge
 
+  class ::Integer
+
+    def method_missing(method, *args)
+      return mod_pow(args[0], args[1]) if method == :pow && args.length < 3
+      super
+    end
+
+    # alternative implementation of Integer#pow for ruby 2.4 and earlier.
+    def mod_pow(x, y)
+      return self ** x unless y
+      b = self
+      result = 1
+      while x > 0
+        result = (result * b) % y if (x & 1) == 1
+        x >>= 1
+        b = (b * b) % y
+      end
+      result
+    end
+
+  end
+
 end
