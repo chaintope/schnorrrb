@@ -120,6 +120,11 @@ module Schnorr
 
   class ::Integer
 
+    def to_hex
+      hex = to_s(16)
+      hex.rjust((hex.length / 2.0).ceil * 2, '0')
+    end
+
     def method_missing(method, *args)
       return mod_pow(args[0], args[1]) if method == :pow && args.length < 3
       super
