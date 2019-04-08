@@ -23,7 +23,7 @@ module Schnorr
         xi = ECDSA::Format::PointOctetString.decode(p, ECDSA::Group::Secp256k1)
         xi.multiply_by_scalar(coefficient(ell, idx))
       end
-      sum = points.inject{|sum, i| sum + i}
+      sum = points.inject(:+)
       ECDSA::Format::PointOctetString.encode(sum, compression: true)
     end
 
