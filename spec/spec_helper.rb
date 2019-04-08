@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "schnorr"
+require 'json'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -19,4 +20,8 @@ end
 
 def read_csv(relative_path)
   CSV.read(File.join(File.dirname(__FILE__), 'fixtures', relative_path), headers: true)
+end
+
+def read_json(relative_path)
+  JSON.load(fixture_file(relative_path))
 end

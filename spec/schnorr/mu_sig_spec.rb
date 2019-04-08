@@ -2,21 +2,33 @@ require 'spec_helper'
 
 RSpec.describe Schnorr::MuSig do
 
-  let(:public_keys) {
-    %w(021b34e02fbfab6153513c7578de070e1c9f2654b88109fb3906bb7f63dffd957d 02bdaa2178ad0db31880dc326b1f8a6a383efd9a579962aac7008d8af738fa814d 038810e83afc4412af9070102e22305c8ae85aad98aa84263db47149f1c9790500).
-        map{|k|[k].pack('H*')}
-  }
-
-
-  describe '#compute_ell' do
-    it 'should return ell' do
-      expect(Schnorr::MuSig.compute_ell(public_keys).unpack('H*').first).to eq('1a5695438032bc21ffdade2dbabe5b30e5d49d202e15a2f3ee87c4a45b8b5805')
-    end
-  end
+  let(:vectors) { read_json('test-vectors-mu-sig.json') }
 
   describe '#combine_pubkey' do
     it 'should return combined public key' do
-      expect(Schnorr::MuSig.pubkey_combine(public_keys).unpack('H*').first).to eq('0226d77f91bcfe366a4f9390c38a7c03d025e541940a881cca98ac4237a0352537')
+      vectors.each do |vec|
+        result = Schnorr::MuSig.pubkey_combine(vec['pubKeys'].map{|p|[p].pack('H*')})
+        expect(result.unpack('H*').first).to eq(vec['pubKeyCombined'])
+      end
+    end
+  end
+
+  describe '#session_initialize' do
+    it 'should return session.' do
+      vectors.each do |vec|
+        public_keys = vec['pubKeys'].map{|p|[p].pack('H*')}
+        combined_pubkey = [vec['pubKeyCombined']].pack('H*')
+        private_keys = vec['privKeys'].map{|k|k.to_i(16)}
+        ell = Schnorr::MuSig.compute_ell(public_keys)
+        message = [vec['message']].pack('H*')
+        private_keys.each_with_index do |key, index|
+          session_id = [vec['sessionIds'][index]].pack('H*')
+          session = Schnorr::MuSig.session_initialize(session_id, key, message, combined_pubkey, ell, index)
+          expect(session.commitment.unpack('H*').first).to eq(vec['commitments'][index])
+          expect(session.secret_key.to_hex).to eq(vec['secretKeys'][index])
+          expect(session.secret_nonce.to_hex).to eq(vec['secretNonces'][index])
+        end
+      end
     end
   end
 
