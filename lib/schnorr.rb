@@ -1,6 +1,7 @@
 require 'ecdsa'
 require 'securerandom'
 require_relative 'schnorr/signature'
+require_relative 'schnorr/mu_sig'
 
 module Schnorr
 
