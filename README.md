@@ -104,6 +104,8 @@ The MuSig signature scheme is based on the implementation of the
 [secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp/blob/secp256k1-zkp/src/modules/musig/musig.md) 
 and [bip-schnorr](https://github.com/guggero/bip-schnorr).
 
+Note: In this scheme, this library only supports secp256k1 curve.
+
 ```ruby
 require 'schnorr'
 
