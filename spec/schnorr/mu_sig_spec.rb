@@ -63,6 +63,27 @@ RSpec.describe Schnorr::MuSig do
     end
   end
 
+  describe '#partial_sig_combine' do
+    it 'should return combined signature.' do
+      vectors.each do |vec|
+        combined_pubkey, private_keys, ell, message = load_data(vec)
+        sessions = private_keys.map.with_index do |key, index|
+          session_id = [vec['sessionIds'][index]].pack('H*')
+          Schnorr::MuSig.session_initialize(session_id, key, message, combined_pubkey, ell, index)
+        end
+        others = sessions.map(&:nonce)
+        others.delete(sessions[0].nonce)
+        combined_nonce = sessions[0].nonce_combine(others)
+        signatures = sessions.map.with_index do |session, index|
+          session.nonce_negate = sessions[0].nonce_negate
+          session.partial_sign(message, combined_nonce, combined_pubkey)
+        end
+        signature = Schnorr::MuSig.partial_sig_combine(combined_nonce, signatures)
+        expect(signature.encode.unpack('H*').first).to eq(vec['signature'])
+      end
+    end
+  end
+
   def load_data(vec)
     public_keys = vec['pubKeys'].map{|p|[p].pack('H*')}
     combined_pubkey = [vec['pubKeyCombined']].pack('H*')

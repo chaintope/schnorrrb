@@ -66,6 +66,17 @@ module Schnorr
       session
     end
 
+    # Combine the partial signatures to obtain a complete signature.
+    # @param combined_nonce (Array)
+    # @param signatures (Array) co-signer's signature.
+    # @return (Schnorr::Signature) a combined signature.
+    def partial_sig_combine(combined_nonce, signatures)
+      point_r = ECDSA::Format::PointOctetString.decode(combined_nonce, ECDSA::Group::Secp256k1)
+      field = ECDSA::PrimeField.new(ECDSA::Group::Secp256k1.order)
+      signature = signatures.inject{|sum, s|field.mod(sum + s)}
+      Schnorr::Signature.new(point_r.x, signature)
+    end
+
     private_class_method :coefficient
 
   end
