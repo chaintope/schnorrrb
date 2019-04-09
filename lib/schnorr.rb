@@ -116,8 +116,6 @@ module Schnorr
     field.mod(ECDSA.normalize_digest(Digest::SHA256.digest(r + public_key + message), group.bit_length))
   end
 
-  private_class_method :create_challenge
-
   class ::Integer
 
     def to_hex

@@ -14,7 +14,11 @@ module Schnorr
         @nonce_negate = false
       end
 
-      # combine nonce
+      def nonce_negate?
+        @nonce_negate
+      end
+
+      # Combine nonce
       # @param nonces (Array[String]) an array of other signer's nonce with binary format.
       # @return (String) combined nonce with binary format.
       def nonce_combine(nonces)
@@ -25,6 +29,21 @@ module Schnorr
           r_point = r_point.negate
         end
         ECDSA::Format::PointOctetString.encode(r_point, compression: true)
+      end
+
+      # Compute partial signature.
+      # @param message (String) a message for signature with binary format.
+      # @param combined_nonce (String) combined nonce with binary format.
+      # @param combined_pubkey (String) combined public key with binary format.
+      # @return (Integer) a partial signature.
+      def partial_sign(message, combined_nonce, combined_pubkey)
+        field = ECDSA::PrimeField.new(ECDSA::Group::Secp256k1.order)
+        point_r = ECDSA::Format::PointOctetString.decode(combined_nonce, ECDSA::Group::Secp256k1)
+        point_p = ECDSA::Format::PointOctetString.decode(combined_pubkey, ECDSA::Group::Secp256k1)
+        e = Schnorr.create_challenge(point_r.x, point_p, message, field, point_r.group)
+        k = secret_nonce
+        k = 0 - k if nonce_negate?
+        field.mod(secret_key * e + k)
       end
 
     end
