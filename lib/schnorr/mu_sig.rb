@@ -39,7 +39,7 @@ module Schnorr
       field.mod(Digest::SHA256.digest(TAG + TAG + ell + [idx].pack('I*')).unpack('H*').first.to_i(16))
     end
 
-    # signer starts the session.
+    # Initialize session to signer starts the session.
     # @param session_id (String) if ++session_id++ is nil, generate new one.
     # @param private_key (Integer) a private key.
     # @param message (String) a message for sign with binary format.
