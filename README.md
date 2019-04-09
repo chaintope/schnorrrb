@@ -98,8 +98,59 @@ Schnorr.valid_sig?(message, public_key, signature, group: ECDSA::Group::xxx)
 
 Note: But this library has only been tested with `secp256k1`. So another curve are not tested.
 
+### MuSig
+
+The MuSig signature scheme is based on the implementation of the 
+[secp256k1-zkp](https://github.com/ElementsProject/secp256k1-zkp/blob/secp256k1-zkp/src/modules/musig/musig.md) 
+and [bip-schnorr](https://github.com/guggero/bip-schnorr).
+
+```ruby
+require 'schnorr'
+
+# Key generation
+## First, MuSig participants must compute combined public key.
+
+combined_pubkey = Schnorr::MuSig.pubkey_combine(pubkeys) # pubkeys is an array of public key with binary format.
+
+## combined_pubkey is the point which added the point which performed the following multiplication to each participant's public key.
+## SHA256(TAG || TAG || ell || pubkey index) * Participant's Pubkey Point
+## ell is calculated by SHA256(pubkey1 + pubkey2 + .... pubkeyn) 
+
+ell = Schnorr::MuSig.compute_ell(pubkeys)
+
+# Signing participant
+
+## the signer create new session
+session = Schnorr::MuSig.session_initialize(nil, private_key, message, combined_pubkey, ell, index) # index = 0
+
+## each participant use same session id
+session_id = session.id
+
+## each participant create own session.
+session = Schnorr::MuSig.session_initialize(session_id, private_key, message, combined_pubkey, ell, index)
+
+## participant send his nonce and collect other participant's nonce.
+session.nonce
+
+other_nonces = [...]
+
+## If collect all participant's nonce, then calculate combined nonce.
+## In this method, if jacobi(y(combined_point)) != 1, 
+## combined_point changed to combined_point.negate and session#nonce_negate changed to true.
+combined_nonce = session.nonce_combine(other_nonces)
+
+## each participants create partial signature
+partial_sig = session.partial_sign(message, combined_nonce, combined_pubkey)
+
+## Aggregate signature.
+signature = Schnorr::MuSig.partial_sig_combine(combined_nonce, signatures)
+ 
+## Verify. If signature is valid, following method will return true.
+Schnorr.valid_sig?(message, combined_pubkey, signature.encode) 
+```
+
 ## TODO
 
 The following is unimplemented now.
 
-* MuSig
+* (t, n) threshold signature.

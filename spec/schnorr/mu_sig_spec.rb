@@ -74,12 +74,13 @@ RSpec.describe Schnorr::MuSig do
         others = sessions.map(&:nonce)
         others.delete(sessions[0].nonce)
         combined_nonce = sessions[0].nonce_combine(others)
-        signatures = sessions.map.with_index do |session, index|
+        signatures = sessions.map do |session|
           session.nonce_negate = sessions[0].nonce_negate
           session.partial_sign(message, combined_nonce, combined_pubkey)
         end
         signature = Schnorr::MuSig.partial_sig_combine(combined_nonce, signatures)
         expect(signature.encode.unpack('H*').first).to eq(vec['signature'])
+        expect(Schnorr.valid_sig?(message, combined_pubkey, signature.encode)).to be true
       end
     end
   end
