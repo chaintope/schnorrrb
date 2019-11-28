@@ -6,7 +6,6 @@ module Schnorr
       attr_accessor :secret_key     # Integer
       attr_accessor :secret_nonce   # Integer
       attr_accessor :nonce          # binary
-      attr_accessor :commitment     # binary
       attr_accessor :nonce_negate   # Boolean
 
       def initialize(session_id = SecureRandom.random_bytes(32))
@@ -16,6 +15,12 @@ module Schnorr
 
       def nonce_negate?
         @nonce_negate
+      end
+
+      # Get nonce commitment
+      # @return [String] commitment with binary format.
+      def commitment
+        Digest::SHA256.digest(nonce)
       end
 
       # Combine nonce

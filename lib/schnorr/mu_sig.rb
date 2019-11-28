@@ -62,7 +62,6 @@ module Schnorr
       raise ArgumentError, 'secret nonce must be an integer in the ragen 1..n-1' unless field.include?(session.secret_nonce)
       point_r = ECDSA::Group::Secp256k1.new_point(session.secret_nonce)
       session.nonce = ECDSA::Format::PointOctetString.encode(point_r, compression: true)
-      session.commitment = Digest::SHA256.digest(session.nonce)
       session
     end
 
