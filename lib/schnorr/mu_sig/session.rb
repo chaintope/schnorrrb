@@ -3,30 +3,41 @@ module Schnorr
     class Session
 
       attr_reader :id               # binary
+      attr_reader :num_signers      # Integer
       attr_accessor :secret_key     # Integer
       attr_accessor :secret_nonce   # Integer
       attr_accessor :nonce          # binary
       attr_accessor :nonce_negate   # Boolean
+      attr_reader :commitments      # commitments for other participants Array[]
 
-      def initialize(session_id = SecureRandom.random_bytes(32))
+      def initialize(session_id = SecureRandom.random_bytes(32), num_signers)
         @id = session_id
         @nonce_negate = false
+        @num_signers = num_signers
+        @commitments = []
       end
 
       def nonce_negate?
         @nonce_negate
       end
 
-      # Get nonce commitment
-      # @return [String] commitment with binary format.
+      # Get self nonce commitment
+      # @return (String) commitment with binary format.
       def commitment
         Digest::SHA256.digest(nonce)
       end
 
-      # Combine nonce
+      # Get combine nonce
       # @param nonces (Array[String]) an array of other signer's nonce with binary format.
       # @return (String) combined nonce with binary format.
-      def nonce_combine(nonces)
+      def combine_nonce(nonces)
+        raise ArgumentError, "Nonce is required for the number of other signers." unless num_signers == (nonces.length + 1)
+        raise ArgumentError, "The number of nonce and commitment does not match." unless nonces.length == commitments.length
+        # check nonce commitments
+        nonces.each do | nonce|
+          commitment = Digest::SHA256.digest(nonce)
+          raise ArgumentError, "Nonce: #{nonce.bth} is invalid. There is no corresponding commitment." unless commitments.include?(commitment)
+        end
         points = ([nonce]+ nonces).map.with_index {|n, index|ECDSA::Format::PointOctetString.decode(n, ECDSA::Group::Secp256k1)}
         r_point = points.inject(:+)
         unless ECDSA::PrimeField.jacobi(r_point.y, ECDSA::Group::Secp256k1.field.prime) == 1

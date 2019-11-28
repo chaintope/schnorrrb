@@ -131,15 +131,22 @@ session_id = session.id
 ## each participant create own session.
 session = Schnorr::MuSig.session_initialize(session_id, private_key, message, combined_pubkey, ell, index)
 
+## participant send his commitment of nonce before send nonce itself.
+session.commitment 
+
+## participant collect other participant's commitments.
+session.commitments << commitment
+
 ## participant send his nonce and collect other participant's nonce.
 session.nonce
 
 other_nonces = [...]
 
 ## If collect all participant's nonce, then calculate combined nonce.
+## An error will occur if the previously collected commitment and nonce do not match. 
 ## In this method, if jacobi(y(combined_point)) != 1, 
 ## combined_point changed to combined_point.negate and session#nonce_negate changed to true.
-combined_nonce = session.nonce_combine(other_nonces)
+combined_nonce = session.combine_nonce(other_nonces)
 
 ## each participants create partial signature
 partial_sig = session.partial_sign(message, combined_nonce, combined_pubkey)
